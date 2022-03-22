@@ -32,8 +32,8 @@
             this.labelName = new System.Windows.Forms.Label();
             this.labelParent = new System.Windows.Forms.Label();
             this.NameTextbox = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // parentComboBox
@@ -69,34 +69,34 @@
             this.NameTextbox.Size = new System.Drawing.Size(190, 22);
             this.NameTextbox.TabIndex = 3;
             // 
-            // button1
+            // btnApply
             // 
-            this.button1.Location = new System.Drawing.Point(297, 118);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(103, 28);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Применить";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnApply.Location = new System.Drawing.Point(297, 118);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(103, 28);
+            this.btnApply.TabIndex = 4;
+            this.btnApply.Text = "Применить";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // btnCancel
             // 
-            this.button2.Location = new System.Drawing.Point(198, 118);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 28);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Отмена";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnCancel.Location = new System.Drawing.Point(198, 118);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 28);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Отмена";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.button2_Click);
             // 
             // CreateUpdateForm
             // 
-            this.AcceptButton = this.button1;
+            this.AcceptButton = this.btnApply;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(418, 162);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnApply);
             this.Controls.Add(this.NameTextbox);
             this.Controls.Add(this.labelParent);
             this.Controls.Add(this.labelName);
@@ -114,7 +114,7 @@
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.Label labelParent;
         private System.Windows.Forms.TextBox NameTextbox;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

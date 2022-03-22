@@ -13,6 +13,8 @@ namespace Lab2
         public List<TreeNode> zeroLevelNodes = new List<TreeNode>();
         public List<TreeNode> firstLevelNodes = new List<TreeNode>();
 
+        bool loaded = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -23,14 +25,15 @@ namespace Lab2
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            treeView.Nodes.Clear();
-            добавитьToolStripMenuItem.Enabled = true;
+            loaded = true;
             LoadRegions();
         }
 
 
         void LoadRegions()
         {
+            zeroLevelNodes = new List<TreeNode>();
+            treeView.Nodes.Clear();
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -46,10 +49,12 @@ namespace Lab2
                     zeroLevelNodes.Add(tn);
                 }
             }
+            добавитьToolStripMenuItem.Enabled = true;
         }
 
         void LoadDistricts(short regionCode, TreeNode parent)
         {
+            parent.Nodes.Clear();
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -63,13 +68,24 @@ namespace Lab2
                     TreeNode tn = new TreeNode(dr["districtName"].ToString(), 0, 0);
                     tn.Tag = (short)dr["districtCode"];
                     parent.Nodes.Add(tn);
-                    firstLevelNodes.Add(tn);
+                    bool found = false;
+                    foreach (TreeNode tn1 in firstLevelNodes)
+                    {
+                        if (tn.Tag == tn1.Tag | tn.Text == tn1.Text) {
+                            found = true; break; 
+                        }
+                    }
+                    if (!found)
+                    {
+                        firstLevelNodes.Add(tn);
+                    }
                 }
             }
         }
 
         void LoadCities(short districtCode, TreeNode parent)
         {
+            parent.Nodes.Clear();
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -94,11 +110,19 @@ namespace Lab2
             {
                 редактироватьToolStripMenuItem.Enabled = true;
                 if (treeView.SelectedNode.Level == 2)
-                    { добавитьToolStripMenuItem.Enabled = false; }
-                    удалитьToolStripMenuItem.Enabled = true; 
+                { добавитьToolStripMenuItem.Enabled = false; }
+                else
+                {
+                    добавитьToolStripMenuItem.Enabled = true;
                 }
-            else 
+                удалитьToolStripMenuItem.Enabled = true;
+            }
+            else
             {
+                if (loaded)
+                {
+                    добавитьToolStripMenuItem.Enabled = true;
+                }
                 удалитьToolStripMenuItem.Enabled = false;
                 редактироватьToolStripMenuItem.Enabled = false;
             }
@@ -155,13 +179,17 @@ namespace Lab2
                     {
                         case 0:
                             {
-                                sql = "delete from RegionInfo where regionCode = @regionCode";
+                                sql = "delete from CityInfo where districtCode in " +
+                                    "(select districtCode from DistrictInfo where regionCode = @regionCode);" +
+                                    "delete from DistrictInfo where regionCode = @regionCode;" +
+                                    "delete from RegionInfo where regionCode = @regionCode;";
                                 value = "@regionCode";
                                 break;
                             }
                         case 1:
                             {
-                                sql = "delete from DistrictInfo where districtCode = @districtCode";
+                                sql = "delete from CityInfo where districtCode = @districtCode;" +
+                                    "delete from DistrictInfo where districtCode = @districtCode;";
                                 value = "@districtCode";
                                 break;
                             }
@@ -267,7 +295,6 @@ namespace Lab2
                 try
                 {
                     var cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@regionCode", treeView.SelectedNode.Tag);
                     cmd.Parameters.AddWithValue("@name", name);
                     cmd.ExecuteNonQuery();
                     LoadRegions();
@@ -317,21 +344,24 @@ namespace Lab2
 
         private void treeView_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode treeNode = treeView.SelectedNode;
-            switch (treeNode.Level)
+            if (treeView.SelectedNode != null)
             {
-                case 0:
-                    treeNode.Nodes.Clear();
-                    LoadDistricts((short)treeNode.Tag, treeNode);
-                    treeNode.Expand();
-                    break;
-                case 1:
-                    treeNode.Nodes.Clear();
-                    LoadCities((short)treeNode.Tag, treeNode);
-                    treeNode.Expand();
-                    break;
-                case 2:
-                    break;
+                TreeNode treeNode = treeView.SelectedNode;
+                switch (treeNode.Level)
+                {
+                    case 0:
+                        treeNode.Nodes.Clear();
+                        LoadDistricts((short)treeNode.Tag, treeNode);
+                        treeNode.Expand();
+                        break;
+                    case 1:
+                        treeNode.Nodes.Clear();
+                        LoadCities((short)treeNode.Tag, treeNode);
+                        treeNode.Expand();
+                        break;
+                    case 2:
+                        break;
+                }
             }
         }
     }

@@ -14,15 +14,11 @@ namespace Lab2
         {
             InitializeComponent();
             name = null;
-            try 
+            if (treeNode != null)
             {
                 parentComboBox.Items.Add(treeNode.Text);
                 parentComboBox.Tag = treeNode.Tag;
                 parentComboBox.SelectedIndex = 0;
-            }
-            catch (NullReferenceException)
-            {
-                parentComboBox.Text = null;
             }
             parentComboBox.Enabled = false;
         }
